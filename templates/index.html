@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!-- HERO SECTION -->
+<header class="hero-section text-center text-white d-flex align-items-center justify-content-center">
+    <div class="container">
+        <h1 class="display-3 fw-bold">TODO PARA TU PROYECTO</h1>
+        <p class="lead">Calidad industrial al mejor precio.</p>
+    </div>
+</header>
+
+<!-- CATEGORIAS -->
+<div class="container py-5">
+    <h2 class="text-center mb-5 fw-bold section-title">NUESTRAS <span class="text-accent">CATEGORÍAS</span></h2>
+    
+    <div class="row g-4">
+        <!-- Tarjeta 1 -->
+        <div class="col-md-4 col-sm-6">
+            <a href="/categoria/materiales" class="card-category">
+                <div class="card bg-dark text-white border-0 h-100">
+                    <div class="card-body text-center p-5">
+                        <i class="bi bi-bricks fs-1 text-accent mb-3"></i>
+                        <h3 class="card-title fw-bold">MATERIALES</h3>
+                        <p class="card-text text-muted">Cemento, arena, ladrillos...</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Tarjeta 2 -->
+        <div class="col-md-4 col-sm-6">
+            <a href="/categoria/seguridad" class="card-category">
+                <div class="card bg-dark text-white border-0 h-100">
+                    <div class="card-body text-center p-5">
+                        <i class="bi bi-shield-check fs-1 text-accent mb-3"></i>
+                        <h3 class="card-title fw-bold">SEGURIDAD</h3>
+                        <p class="card-text text-muted">EPP, cascos, guantes...</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Tarjeta 3 -->
+        <div class="col-md-4 col-sm-6">
+            <a href="/categoria/herramientas" class="card-category">
+                <div class="card bg-dark text-white border-0 h-100">
+                    <div class="card-body text-center p-5">
+                        <i class="bi bi-hammer fs-1 text-accent mb-3"></i>
+                        <h3 class="card-title fw-bold">HERRAMIENTAS</h3>
+                        <p class="card-text text-muted">Manuales y eléctricas...</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Tarjeta 4 -->
+        <div class="col-md-6 col-sm-6">
+            <a href="/categoria/accesorios" class="card-category">
+                <div class="card bg-dark text-white border-0 h-100">
+                    <div class="card-body text-center p-5">
+                        <i class="bi bi-nut fs-1 text-accent mb-3"></i>
+                        <h3 class="card-title fw-bold">ACCESORIOS</h3>
+                        <p class="card-text text-muted">Tornillería, adhesivos, pintura...</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Tarjeta 5 -->
+        <div class="col-md-6 col-sm-6">
+            <a href="/categoria/electricos" class="card-category">
+                <div class="card bg-dark text-white border-0 h-100">
+                    <div class="card-body text-center p-5">
+                        <i class="bi bi-lightning-charge fs-1 text-accent mb-3"></i>
+                        <h3 class="card-title fw-bold">ELÉCTRICOS</h3>
+                        <p class="card-text text-muted">Cables, focos, interruptores...</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

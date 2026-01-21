@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5 mt-5">
+    <!-- Botón volver -->
+    <a href="/" class="btn btn-outline-light mb-4"><i class="bi bi-arrow-left"></i> Volver al inicio</a>
+    
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary pb-3">
+        <h2 class="fw-bold text-white">{{ titulo }}</h2>
+        <span class="badge bg-warning text-dark fs-6">{{ productos|length }} Productos</span>
+    </div>
+
+    {% if productos %}
+    <div class="row g-4">
+        {% for prod in productos %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card bg-dark text-white border-secondary h-100 product-card">
+                <!-- Imagen Referencial (Placeholder si no hay imagen real) -->
+                <div class="product-img-container text-center p-3 bg-secondary bg-opacity-10">
+                    <!-- Usamos una imagen genérica por ahora para que no se rompa -->
+                    <i class="bi bi-box-seam fs-1 text-secondary" style="font-size: 4rem !important;"></i>
+                    <!-- En el futuro aquí irá: <img src="..." class="img-fluid"> -->
+                </div>
+                
+                <div class="card-body">
+                    <h5 class="card-title fw-bold text-accent">{{ prod.nombre }}</h5>
+                    <p class="card-text small text-muted">{{ prod.desc }}</p>
+                    
+                    <div class="specs mt-3 mb-3 small">
+                        <div class="d-flex justify-content-between">
+                            <span>Stock:</span>
+                            <span class="fw-bold {% if prod.stock < 10 %}text-danger{% else %}text-success{% endif %}">
+                                {{ prod.stock }} unid.
+                            </span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>Precio Unit.:</span>
+                            <span class="fw-bold text-white">S/ {{ "%.2f"|format(prod.precio) }}</span>
+                        </div>
+                    </div>
+
+                    <!-- Controles de Cantidad y Agregar -->
+                    <div class="d-flex gap-2 align-items-center mt-3">
+                        <input type="number" min="1" max="{{ prod.stock }}" value="1" class="form-control form-control-sm bg-dark text-white border-secondary text-center" style="width: 60px;" id="cant-{{ prod.id }}">
+                        
+                        <button class="btn btn-warning btn-sm w-100 fw-bold" 
+                                onclick="agregarAlCarrito('{{ prod.id }}', '{{ prod.nombre }}', {{ prod.precio }})">
+                            <i class="bi bi-cart-plus"></i> AGREGAR
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-dark text-center" role="alert">
+        <i class="bi bi-cone-striped fs-2 d-block mb-2 text-warning"></i>
+        No hay productos registrados en esta categoría aún.
+    </div>
+    {% endif %}
+</div>
+
+<!-- Script simple para probar el botón (luego lo mejoraremos) -->
+<script>
+    function agregarAlCarrito(id, nombre, precio) {
+        let cantidad = document.getElementById('cant-' + id).value;
+        alert(`Se agregó ${cantidad} unidad(es) de ${nombre} al pedido.`);
+        // Aquí conectaremos con la lógica real del carrito en el siguiente paso
+    }
+</script>
+{% endblock %}
