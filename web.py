@@ -77,9 +77,15 @@ def login():
 def admin_panel():
     if 'user' not in session:
         return redirect(url_for('login'))
-    return f"<h1>BIENVENIDO AL PANEL</h1><p>Usuario: {session['user']}</p>"
+    
+    # Pasamos el nombre del usuario al HTML
+    return render_template('admin.html', user=session['user'])
 
-if __name__ == '__main__':
-    app.run(debug=True)
+# Agrega también esta ruta para poder Salir
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('home'))
+
 
 
