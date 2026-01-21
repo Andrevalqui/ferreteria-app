@@ -6,18 +6,35 @@
     <title>Bienvenid@</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <style>body { background-color: #0f172a; height: 100vh; display: flex; justify-content: center; align-items: center; }</style>
+    <style>
+        body { 
+            background-color: #0f172a; 
+            height: 100vh; 
+            margin: 0;
+            display: flex; 
+            flex-direction: column; /* Importante para el orden vertical */
+            justify-content: center; 
+            align-items: center; 
+            text-align: center; /* Asegura centrado de textos internos */
+        }
+        .content-wrapper {
+            max-width: 600px;
+            padding: 20px;
+        }
+    </style>
 </head>
 <body>
-    <div class="text-center">
-        <img src="{{ url_for('static', filename='images/logo.png') }}" class="logo-pulse mb-3" width="150">
-        <h1 class="logo-text text-white">FERRETERÍA <span class="text-accent">TAPIA MELENDEZ</span></h1>
+    <div class="content-wrapper">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" class="logo-pulse mb-3" width="140">
         
-        <!-- AQUÍ SE MUESTRA EL NOMBRE DINÁMICO -->
-        <h2 class="mt-4 text-white fw-bold">Bienvenid@ {{ nombre_usuario }}</h2>
-        <p class="text-muted">Cargando panel de gestión...</p>
+        <h1 class="logo-text text-white mb-2">FERRETERÍA <span class="text-accent">TAPIA MELÉNDEZ</span></h1>
         
-        <div class="loader mx-auto mt-3"></div>
+        <!-- Nombre Dinámico -->
+        <h2 class="text-white fw-bold mb-3">Bienvenid@ {{ nombre_usuario }}</h2>
+        
+        <p class="text-muted mb-4" style="letter-spacing: 1px;">Cargando panel de gestión...</p>
+        
+        <div class="loader mx-auto"></div>
     </div>
 </body>
 </html>
