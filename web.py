@@ -7,7 +7,7 @@ app.secret_key = "CLAVE_SECRETA_FERRETERIA"
 
 # --- CONFIGURACIÓN SUPABASE ---
 # ⚠️ IMPORTANTE: Borra la URL de abajo y pega la que acabas de copiar de Supabase (Ctrl+V)
-SUPABASE_URL = "PEGA_AQUI_TU_URL_NUEVA_COPIADA_DE_SUPABASE"
+SUPABASE_URL = "https://hvwwckeoykzvntqgdbjq.supabase.co"
 
 # Tu llave (Esta parece estar bien, pero si quieres cópiala de nuevo por si acaso)
 SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2d3dja2VveWt6dm50cWdkYmpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzcwMDIwMDQsImV4cCI6MjA1MjU3ODAwNH0.w9pHZZI-L36qQYlH5-K3dIvlWVFQ7uegTjxVT3q7JLQ"
@@ -81,3 +81,4 @@ def admin_panel():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
