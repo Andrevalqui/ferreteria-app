@@ -1,12 +1,12 @@
 import os
 import requests
-import json
 from flask import Flask, render_template, request, session, redirect, url_for
 
 app = Flask(__name__)
 app.secret_key = "CLAVE_SECRETA_FERRETERIA"
 
-# --- CREDENCIALES ---
+# --- CREDENCIALES SUPABASE ---
+# He verificado la URL de tu captura, asegúrate de no agregar espacios al final
 SUPABASE_URL = "https://hvwwckeoykzvntqgdbjq.supabase.co"
 SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2d3dja2VveWt6dm50cWdkYmpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzcwMDIwMDQsImV4cCI6MjA1MjU3ODAwNH0.w9pHZZI-L36qQYlH5-K3dIvlWVFQ7uegTjxVT3q7JLQ"
 
@@ -19,12 +19,12 @@ def consultar_supabase(tabla, query_params={}):
     }
     try:
         response = requests.get(url, headers=headers, params=query_params, timeout=10)
-        # Si falla, devolvemos el error crudo para verlo en pantalla
-        if response.status_code != 200:
-            return {"error_debug": f"Status: {response.status_code}, Msg: {response.text}"}
+        # Si hay error 400/500, esto lanzará excepción
+        response.raise_for_status()
         return response.json()
     except Exception as e:
-        return {"error_debug": f"Excepción Python: {str(e)}"}
+        print(f"Error Conexión: {e}")
+        return None
 
 # --- RUTAS ---
 
@@ -35,53 +35,57 @@ def home():
 @app.route('/catalogo/todo')
 def catalogo_completo():
     data = consultar_supabase('productos', {"select": "*"})
-    lista_productos = data if isinstance(data, list) else []
+    # Si devuelve None o error, enviamos lista vacía
+    lista_productos = data if data else []
     return render_template('category.html', productos=lista_productos, titulo="CATÁLOGO COMPLETO", categoria_id="todo")
 
 @app.route('/categoria/<tipo>')
 def categoria(tipo):
     params = {"select": "*", "categoria": f"eq.{tipo}"}
     data = consultar_supabase('productos', params)
-    lista_productos = data if isinstance(data, list) else []
+    lista_productos = data if data else []
     
     titulo = tipo.upper().replace('_', ' ')
     return render_template('category.html', productos=lista_productos, titulo=titulo, categoria_id=tipo)
 
-# --- LOGIN MODO DETECTIVE ---
+# --- LOGIN MEJORADO (Con mensaje único solicitado) ---
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error = None
     if request.method == 'POST':
+        # 1. Limpiamos espacios en blanco accidentales (.strip())
         usuario = request.form['username'].strip()
         contra = request.form['password'].strip()
         
-        # Consultamos a Supabase
+        # 2. Consultamos por usuario
         params = {
             "select": "*",
             "username": f"eq.{usuario}"
         }
         
-        data = consultar_supabase('usuarios', params)
-        
-        # --- BLOQUE DE DIAGNÓSTICO ---
-        if isinstance(data, dict) and "error_debug" in data:
-            # Si hubo error técnico, LO MOSTRAMOS EN PANTALLA
-            error = f"Error Técnico: {data['error_debug']}"
-        elif isinstance(data, list):
-            if len(data) > 0:
+        try:
+            data = consultar_supabase('usuarios', params)
+            
+            login_exitoso = False
+            
+            if data and len(data) > 0:
+                # El usuario EXISTE, verificamos la contraseña
                 user_data = data[0]
-                # Verificamos contraseña
+                
                 if user_data['password'] == contra:
+                    login_exitoso = True
                     session['user'] = user_data['username']
                     session['rol'] = user_data['rol']
                     return render_template('login_success.html', nombre_usuario=user_data['username'])
-                else:
-                    error = f"Contraseña incorrecta. (Tu pusiste: '{contra}', en BD es: '{user_data['password']}')"
-            else:
-                error = f"Usuario no encontrado. (Buscamos: '{usuario}' y la BD devolvió lista vacía [])"
-        else:
-            error = "Error desconocido en formato de respuesta."
+            
+            # Si no entró al IF de éxito, mostramos el mensaje genérico que pediste
+            if not login_exitoso:
+                error = "Credenciales incorrectas, contáctese con el administrador de la plataforma."
+                
+        except Exception as e:
+            # Error técnico de conexión
+            error = "Error de conexión con el servidor. Intente más tarde."
 
     return render_template('login.html', error=error)
 
@@ -93,4 +97,3 @@ def admin_panel():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
