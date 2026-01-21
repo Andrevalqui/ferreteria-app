@@ -79,13 +79,13 @@
             <h1 class="logo-text">FERRETERÍA <span class="text-accent">TAPIA MELENDEZ</span></h1>
             
             <!-- Texto Personalizado -->
-            <p class="loading-text" style="color: white; font-weight: 800; font-size: 1.2rem;">A loguearse estimad@...</p>
+            <p class="loading-text" style="color: white; font-weight: 800; font-size: 1.2rem;">A Loguearse estimado...</p>
             
             <div class="loader mx-auto"></div>
         </div>
     </div>
 
-    <!-- SPLASH SCREEN 2: SALIDA (AGREGADO: Validando credenciales) -->
+    <!-- SPLASH SCREEN 2: SALIDA (Validando credenciales) -->
     <div id="splash-validando" class="splash-overlay" style="display: none; opacity: 0;">
         <div class="splash-content text-center">
             <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo-pulse mb-3" style="max-width: 140px;">
@@ -104,11 +104,12 @@
     <div class="login-card text-center">
         <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" width="80" class="mb-4">
         
-        <h4 class="fw-bold mb-1">Bienvenid@ Estimad@</h4>
+        <!-- CAMBIO REALIZADO: Título Corporativo -->
+        <h4 class="fw-bold mb-1 text-white">Ferretería Tapia Meléndez</h4>
         <p class="text-subtitle mb-4">Ingrese sus credenciales corporativas</p>
 
         {% if error %}
-            <!-- CORRECCIÓN: Alerta más visible -->
+            <!-- Alerta visible -->
             <div class="alert alert-danger py-2 small fw-bold border-danger bg-danger bg-opacity-10 text-danger">
                 <i class="bi bi-exclamation-triangle-fill me-1"></i> {{ error }}
             </div>
@@ -117,14 +118,14 @@
         <form method="POST" id="loginForm">
             <div class="text-start mb-3">
                 <label class="fw-bold small ms-1 mb-1 text-accent">Usuario</label>
-                <!-- CORRECCIÓN: Quitamos bg-dark y usamos la clase form-control corregida en CSS -->
+                <!-- Inputs corregidos -->
                 <input type="text" name="username" class="form-control" placeholder="Ingrese su usuario" required>
             </div>
 
             <div class="text-start mb-4">
                 <label class="fw-bold small ms-1 mb-1 text-accent">Contraseña</label>
                 <div class="input-group">
-                    <!-- CORRECCIÓN: Quitamos bg-dark y usamos la clase form-control corregida en CSS -->
+                    <!-- Inputs corregidos -->
                     <input type="password" name="password" id="passwordInput" class="form-control" placeholder="Ingrese su contraseña" required>
                     <button class="btn btn-outline-secondary border-secondary" type="button" onclick="togglePassword()">
                         <i class="bi bi-eye text-white" id="eyeIcon"></i>
@@ -146,11 +147,20 @@
             }, 1500);
         });
 
-        // AGREGADO: Animación Splash Salida (Validando...)
-        document.getElementById('loginForm').addEventListener('submit', function() {
+        // CAMBIO REALIZADO: Lógica de espera de 3 segundos
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Detenemos el envío inmediato
+            
             const splashExit = document.getElementById('splash-validando');
             splashExit.style.display = 'flex';
+            
+            // Aparece suavemente
             setTimeout(() => { splashExit.style.opacity = '1'; }, 10);
+
+            // Esperamos 3 segundos y ENVIAMOS
+            setTimeout(() => {
+                this.submit(); // Envío real al servidor
+            }, 3000);
         });
 
         function togglePassword() {
