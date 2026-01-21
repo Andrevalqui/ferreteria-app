@@ -17,17 +17,24 @@
             <div class="card bg-dark text-white border-secondary h-100 product-card">
                 <!-- Imagen Referencial (Placeholder si no hay imagen real) -->
                 <div class="product-img-container text-center p-3 bg-white rounded-top position-relative">
-    <!-- IMAGEN DEL PRODUCTO -->
-    <img src="{{ url_for('static', filename='images/' + prod.img) }}" 
-         class="img-fluid product-image" 
-         alt="{{ prod.nombre }}"
-         style="max-height: 200px; object-fit: contain;">
-         
-    <!-- Badge de Stock (Opcional, detalle visual) -->
-    <span class="position-absolute top-0 end-0 badge bg-dark m-2 border border-secondary">
-        Stock: {{ prod.stock }}
-    </span>
-</div>
+                    <!-- LOGICA SEGURA DE IMAGEN -->
+                    {% if prod.img %}
+                        <img src="{{ url_for('static', filename='images/' + prod.img) }}" 
+                             class="img-fluid product-image" 
+                             alt="{{ prod.nombre }}"
+                             style="max-height: 200px; object-fit: contain;">
+                    {% else %}
+                        <!-- Si no hay imagen en la BD, mostramos un ícono por defecto -->
+                        <div class="d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <i class="bi bi-camera-fill text-secondary fs-1 opacity-25"></i>
+                        </div>
+                    {% endif %}
+                         
+                    <!-- Badge de Stock -->
+                    <span class="position-absolute top-0 end-0 badge bg-dark m-2 border border-secondary">
+                        Stock: {{ prod.stock }}
+                    </span>
+                </div>
                     <!-- Usamos una imagen genérica por ahora para que no se rompa -->
                     <i class="bi bi-box-seam fs-1 text-secondary" style="font-size: 4rem !important;"></i>
                     <!-- En el futuro aquí irá: <img src="..." class="img-fluid"> -->
@@ -82,3 +89,4 @@
 </script>
 
 {% endblock %}
+
