@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Productos | Tapia Meléndez</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .admin-content { background-color: #0f172a; min-height: 100vh; color: white; padding: 2rem; }
+        .table-dark { background-color: #1e293b; --bs-table-bg: #1e293b; }
+        .btn-circle { width: 35px; height: 35px; padding: 0; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; }
+        /* Modal Oscuro */
+        .modal-content { background-color: #1e293b; color: white; border: 1px solid #334155; }
+        .form-control, .form-select { background-color: #0f172a; border: 1px solid #475569; color: white; }
+        .form-control:focus, .form-select:focus { background-color: #0f172a; color: white; border-color: #f59e0b; box-shadow: none; }
+    </style>
+</head>
+<body>
+
+    <div class="container py-4">
+        <!-- CABECERA -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <a href="/admin" class="btn btn-outline-light btn-sm mb-2"><i class="bi bi-arrow-left"></i> Volver al Panel</a>
+                <h2 class="fw-bold">📦 Inventario de Productos</h2>
+            </div>
+            <button class="btn btn-warning fw-bold" onclick="abrirModalNuevo()">
+                <i class="bi bi-plus-lg"></i> NUEVO PRODUCTO
+            </button>
+        </div>
+
+        <!-- TABLA -->
+        <div class="table-responsive rounded shadow-sm">
+            <table class="table table-dark table-hover align-middle mb-0">
+                <thead class="text-secondary text-uppercase small">
+                    <tr>
+                        <th>ID</th>
+                        <th>Imagen</th>
+                        <th>Producto</th>
+                        <th>Categoría</th>
+                        <th class="text-end">Precio</th>
+                        <th class="text-center">Stock</th>
+                        <th class="text-end">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in productos %}
+                    <tr>
+                        <td class="text-muted">#{{ p.id }}</td>
+                        <td>
+                            {% if p.img %}
+                                <img src="{{ url_for('static', filename='images/' + p.img) }}" width="40" height="40" class="rounded object-fit-cover">
+                            {% else %}
+                                <div class="bg-secondary rounded d-flex align-items-center justify-content-center text-white small" style="width:40px; height:40px;"><i class="bi bi-box"></i></div>
+                            {% endif %}
+                        </td>
+                        <td class="fw-bold text-accent">{{ p.nombre }}</td>
+                        <td><span class="badge bg-secondary bg-opacity-25 text-light border border-secondary">{{ p.categoria|upper }}</span></td>
+                        <td class="text-end fw-bold">S/ {{ "%.2f"|format(p.precio) }}</td>
+                        <td class="text-center">
+                            <span class="badge {% if p.stock < 5 %}bg-danger{% else %}bg-success{% endif %}">
+                                {{ p.stock }}
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            <button class="btn btn-outline-info btn-circle btn-sm me-1" onclick='editar({{ p|tojson }})'>
+                                <i class="bi bi-pencil-fill"></i>
+                            </button>
+                            <a href="/admin/producto/eliminar/{{ p.id }}" class="btn btn-outline-danger btn-circle btn-sm" onclick="return confirm('¿Seguro de eliminar este producto?')">
+                                <i class="bi bi-trash-fill"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center py-5 text-muted">
+                            <i class="bi bi-inbox fs-1 d-block mb-2"></i>
+                            No hay productos registrados aún.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- MODAL CREAR/EDITAR -->
+    <div class="modal fade" id="prodModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title fw-bold" id="modalTitle">Nuevo Producto</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="/admin/producto/guardar" method="POST">
+                    <div class="modal-body">
+                        <input type="hidden" name="id" id="prodId">
+                        
+                        <div class="mb-3">
+                            <label class="form-label text-secondary small">Nombre del Producto</label>
+                            <input type="text" name="nombre" id="prodNombre" class="form-control" required>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label class="form-label text-secondary small">Categoría</label>
+                                <select name="categoria" id="prodCat" class="form-select" required>
+                                    <option value="materiales">Materiales</option>
+                                    <option value="seguridad">Seguridad</option>
+                                    <option value="herramientas">Herramientas</option>
+                                    <option value="accesorios">Accesorios</option>
+                                    <option value="electricos">Eléctricos</option>
+                                </select>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label class="form-label text-secondary small">Stock Inicial</label>
+                                <input type="number" name="stock" id="prodStock" class="form-control" value="0" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label text-secondary small">Precio Unitario (S/)</label>
+                            <input type="number" step="0.01" name="precio" id="prodPrecio" class="form-control" value="0.00" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label text-secondary small">Descripción Corta</label>
+                            <textarea name="desc" id="prodDesc" class="form-control" rows="2"></textarea>
+                        </div>
+
+                        <!-- Por ahora nombre manual de imagen -->
+                        <div class="mb-3">
+                            <label class="form-label text-secondary small">Nombre Archivo Imagen (Ej: cemento.jpg)</label>
+                            <input type="text" name="img_url" id="prodImg" class="form-control" placeholder="Opcional">
+                        </div>
+
+                    </div>
+                    <div class="modal-footer border-secondary">
+                        <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-warning fw-bold">GUARDAR DATOS</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const modal = new bootstrap.Modal(document.getElementById('prodModal'));
+
+        function abrirModalNuevo() {
+            document.getElementById('modalTitle').innerText = "Nuevo Producto";
+            document.getElementById('prodId').value = "";
+            document.getElementById('prodNombre').value = "";
+            document.getElementById('prodStock').value = "";
+            document.getElementById('prodPrecio').value = "";
+            document.getElementById('prodDesc').value = "";
+            document.getElementById('prodImg').value = "";
+            modal.show();
+        }
+
+        function editar(p) {
+            document.getElementById('modalTitle').innerText = "Editar Producto #" + p.id;
+            document.getElementById('prodId').value = p.id;
+            document.getElementById('prodNombre').value = p.nombre;
+            document.getElementById('prodCat').value = p.categoria;
+            document.getElementById('prodStock').value = p.stock;
+            document.getElementById('prodPrecio').value = p.precio;
+            document.getElementById('prodDesc').value = p.desc;
+            document.getElementById('prodImg').value = p.img || "";
+            modal.show();
+        }
+    </script>
+</body>
+</html>
