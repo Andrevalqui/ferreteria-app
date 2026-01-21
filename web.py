@@ -81,11 +81,17 @@ def admin_panel():
     # Pasamos el nombre del usuario al HTML
     return render_template('admin.html', user=session['user'])
 
-# Agrega también esta ruta para poder Salir
+# --- NUEVA RUTA: LOGOUT ---
 @app.route('/logout')
 def logout():
-    session.clear()
+    session.clear() # Borra las cookies de sesión
     return redirect(url_for('home'))
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+
+
 
 
 
