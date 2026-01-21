@@ -3,122 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso Corporativo | Tapia Melendez</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>Acceso Corporativo</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
-    <!-- Reutilizamos tu CSS para mantener la identidad -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     
     <style>
-        body { 
-            background-color: #0f172a; 
-            color: white; 
-            font-family: 'Montserrat', sans-serif; 
-            min-height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            position: relative; 
-            overflow: hidden; 
-        }
-
-        /* Arreglo para textos invisibles */
-        .form-control::placeholder { color: #94a3b8; opacity: 1; }
-        .text-subtitle { color: #cbd5e1 !important; font-size: 0.9rem; }
+        body { background-color: #0f172a; color: white; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
         
-        /* Botón Volver */
+        /* Arreglo de visibilidad de textos */
+        .form-label { color: #f59e0b; font-weight: 700; font-size: 0.9rem; margin-left: 5px; }
+        .text-subtitle { color: #e2e8f0 !important; font-size: 0.95rem; opacity: 0.9; }
+        .form-control { background-color: #1e293b; border: 1px solid #475569; color: white; }
+        .form-control::placeholder { color: #94a3b8; opacity: 1; }
+        .form-control:focus { background-color: #1e293b; color: white; border-color: #f59e0b; box-shadow: 0 0 0 0.2rem rgba(245, 158, 11, 0.25); }
+
+        .login-card { background-color: #1e293b; border: 1px solid #334155; width: 100%; max-width: 450px; border-radius: 20px; padding: 3rem 2rem; box-shadow: 0 20px 50px rgba(0,0,0,0.5); z-index: 5; }
+        .btn-access { background-color: #1e3a8a; color: white; width: 100%; padding: 12px; border-radius: 50px; font-weight: 700; border: none; margin-top: 20px; transition: all 0.3s; }
+        .btn-access:hover { background-color: #2563eb; }
         .top-bar { position: absolute; top: 0; width: 100%; padding: 20px; text-align: center; z-index: 10; }
         .btn-back-web { background-color: rgba(30, 58, 138, 0.5); border: 1px solid #1e3a8a; color: white; padding: 10px 30px; border-radius: 50px; text-decoration: none; font-weight: 600; backdrop-filter: blur(5px); }
-        .btn-back-web:hover { background-color: #2563eb; color: white; }
+        .btn-back-web:hover { color: white; background-color: #2563eb; }
 
-        /* Tarjeta */
-        .login-card { background-color: #1e293b; border: 1px solid #334155; width: 100%; max-width: 450px; border-radius: 20px; padding: 3rem 2rem; box-shadow: 0 20px 50px rgba(0,0,0,0.5); z-index: 5; }
-        
-        .btn-access { background-color: #1e3a8a; color: white; width: 100%; padding: 12px; border-radius: 50px; font-weight: 700; border: none; margin-top: 20px; transition: all 0.3s; }
-        .btn-access:hover { background-color: #2563eb; letter-spacing: 1px; }
-
-        /* SPLASH SCREEN ESPECÍFICO */
-        #splash-login {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #0f172a; z-index: 9999;
-            display: flex; justify-content: center; align-items: center; flex-direction: column; text-align: center;
-            transition: opacity 0.5s ease-out;
-        }
+        /* SPLASH SCREENS */
+        .splash-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #0f172a; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s ease; }
     </style>
 </head>
 <body>
 
-    <!-- SPLASH SCREEN (Mismo diseño que la portada) -->
-    <div id="splash-login">
-        <div class="splash-content text-center">
-            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo-pulse mb-3" style="max-width: 140px;">
-            <h1 class="logo-text">FERRETERÍA <span class="text-accent">TAPIA MELENDEZ</span></h1>
-            
-            <!-- Texto Personalizado -->
-            <p class="loading-text" style="color: white; font-weight: 800; font-size: 1.2rem;">A Loguearse estimado...</p>
-            
-            <div class="loader mx-auto"></div>
-        </div>
+    <!-- SPLASH 1: ENTRADA -->
+    <div id="splash-entry" class="splash-overlay">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" class="logo-pulse mb-3" width="120">
+        <h2 class="fw-bold text-white">A Loguearse estimado...</h2>
+        <div class="loader mt-3"></div>
     </div>
 
-    <!-- Botón Superior -->
+    <!-- SPLASH 2: SALIDA (Validando) -->
+    <div id="splash-exit" class="splash-overlay" style="display: none; opacity: 0;">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" class="logo-pulse mb-3" width="120">
+        <h2 class="fw-bold text-white">Validando credenciales...</h2>
+        <div class="loader mt-3"></div>
+    </div>
+
     <div class="top-bar">
-        <a href="/" class="btn-back-web"><i class="bi bi-arrow-left-circle me-2"></i> VOLVER A LA PÁGINA WEB</a>
+        <a href="/" class="btn-back-web"><i class="bi bi-arrow-left-circle me-2"></i> VOLVER A LA WEB</a>
     </div>
 
-    <!-- Tarjeta Login -->
     <div class="login-card text-center">
-        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" width="80" class="mb-4">
-        
+        <img src="{{ url_for('static', filename='images/logo.png') }}" width="80" class="mb-4">
         <h4 class="fw-bold mb-1">Bienvenid@ Estimad@</h4>
         <p class="text-subtitle mb-4">Ingrese sus credenciales corporativas</p>
 
         {% if error %}
-            <div class="alert alert-danger py-2 small">{{ error }}</div>
+            <div class="alert alert-danger py-2 small fw-bold">{{ error }}</div>
         {% endif %}
 
-        <form method="POST">
+        <form method="POST" id="loginForm">
             <div class="text-start mb-3">
-                <label class="fw-bold small ms-1 mb-1 text-accent">Usuario</label>
-                <input type="text" name="username" class="form-control bg-dark text-white border-secondary" placeholder="Ingrese su usuario" required>
+                <label class="form-label">Usuario</label>
+                <input type="text" name="username" class="form-control" placeholder="Ingrese su usuario" required>
             </div>
-
             <div class="text-start mb-4">
-                <label class="fw-bold small ms-1 mb-1 text-accent">Contraseña</label>
+                <label class="form-label">Contraseña</label>
                 <div class="input-group">
-                    <input type="password" name="password" id="passwordInput" class="form-control bg-dark text-white border-secondary" placeholder="Ingrese su contraseña" required>
-                    <button class="btn btn-outline-secondary border-secondary" type="button" onclick="togglePassword()">
-                        <i class="bi bi-eye text-white" id="eyeIcon"></i>
-                    </button>
+                    <input type="password" name="password" id="passInput" class="form-control" placeholder="Ingrese su contraseña" required>
+                    <button class="btn btn-outline-secondary border-secondary" type="button" onclick="togglePass()"><i class="bi bi-eye text-white" id="eyeIcon"></i></button>
                 </div>
             </div>
-
             <button type="submit" class="btn-access">ACCEDER AL PORTAL</button>
         </form>
     </div>
 
     <script>
-        // Animación Splash
+        // Ocultar Splash de Entrada al cargar
         window.addEventListener('load', () => {
             setTimeout(() => {
-                const splash = document.getElementById('splash-login');
+                const splash = document.getElementById('splash-entry');
                 splash.style.opacity = '0';
                 setTimeout(() => { splash.style.display = 'none'; }, 500);
             }, 1500);
         });
 
-        function togglePassword() {
-            const input = document.getElementById('passwordInput');
+        // Mostrar Splash de Salida al enviar
+        document.getElementById('loginForm').addEventListener('submit', function() {
+            const splashExit = document.getElementById('splash-exit');
+            splashExit.style.display = 'flex';
+            setTimeout(() => { splashExit.style.opacity = '1'; }, 10);
+        });
+
+        function togglePass() {
+            const input = document.getElementById('passInput');
             const icon = document.getElementById('eyeIcon');
-            if (input.type === "password") {
-                input.type = "text";
-                icon.classList.replace('bi-eye', 'bi-eye-slash');
-            } else {
-                input.type = "password";
-                icon.classList.replace('bi-eye-slash', 'bi-eye');
-            }
+            if(input.type === "password"){ input.type="text"; icon.classList.replace('bi-eye','bi-eye-slash'); }
+            else { input.type="password"; icon.classList.replace('bi-eye-slash','bi-eye'); }
         }
     </script>
 </body>
