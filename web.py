@@ -47,21 +47,23 @@ def categoria(tipo):
 def login():
     error = None
     if request.method == 'POST':
-        # CONTRASEÑA SIMPLE PARA EL CLIENTE
-        if request.form['password'] == 'admin2025': 
-            session['user'] = 'empleado'
-            return redirect(url_for('admin_panel'))
-        else:
-            error = "Contraseña incorrecta"
+        usuario = request.form['username']
+        contra = request.form['password']
+        
+        try:
+            # Buscamos en Supabase si existe el usuario y contraseña
+            response = supabase.table('usuarios').select("*").eq('username', usuario).eq('password', contra).execute()
+            
+            if len(response.data) > 0:
+                # Login Exitoso
+                user_data = response.data[0]
+                session['user'] = user_data['username']
+                session['rol'] = user_data['rol']
+                # Redireccionamos a una ruta intermedia para mostrar el splash screen de éxito
+                return render_template('login_success.html')
+            else:
+                error = "Usuario o contraseña incorrectos"
+        except Exception as e:
+            error = f"Error de conexión: {e}"
+
     return render_template('login.html', error=error)
-
-@app.route('/admin')
-def admin_panel():
-    if 'user' not in session:
-        return redirect(url_for('login'))
-    
-    # Aquí cargaremos el inventario para editar
-    return "<h1>BIENVENIDO AL PANEL (En construcción...)</h1>"
-
-if __name__ == '__main__':
-    app.run(debug=True)
