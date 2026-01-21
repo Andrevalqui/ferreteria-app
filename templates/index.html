@@ -1,6 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+<!-- SPLASH: REDIRIGIENDO AL PORTAL (Solo visible si se activa) -->
+<div id="splash-portal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #0f172a; z-index: 9999; display: none; justify-content: center; align-items: center; flex-direction: column; text-align: center; opacity: 0; transition: opacity 0.5s ease;">
+    <img src="{{ url_for('static', filename='images/logo.png') }}" class="logo-pulse mb-3" width="120">
+    <h2 class="fw-bold text-white">Redirigiendo al Portal...</h2>
+    <div class="loader mt-3" style="width: 50px; height: 50px; border: 5px solid #333; border-top: 5px solid #f59e0b; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+    <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
+</div>
+
 <!-- HERO SECTION -->
 <header class="hero-section text-center text-white d-flex align-items-center justify-content-center">
     <div class="container">
@@ -79,18 +88,41 @@
             </a>
         </div>
     </div>
-<!-- BOTÓN VER TODO -->
+
+    <!-- BOTONES INFERIORES -->
     <div class="row mt-5">
         <div class="col-12 text-center">
-            <a href="/catalogo/todo" class="btn btn-outline-warning btn-lg px-5 py-3 fw-bold rounded-pill">
+            <a href="/catalogo/todo" class="btn btn-outline-warning btn-lg px-5 py-3 fw-bold rounded-pill mb-4">
                 <i class="bi bi-grid-3x3-gap-fill me-2"></i> VER CATÁLOGO COMPLETO
             </a>
-            <div class="mt-4">
-                <a href="/login" class="text-muted small text-decoration-none">
-                    <i class="bi bi-lock-fill"></i> Acceso Empleados
-                </a>
+            
+            <div class="mt-2">
+                {% if user %}
+                    <!-- SI ESTÁ LOGUEADO: Botón Volver al Portal -->
+                    <button onclick="volverPortal()" class="btn btn-sm btn-primary rounded-pill px-4 fw-bold shadow">
+                        <i class="bi bi-speedometer2 me-2"></i> Volver al Portal ({{ user }})
+                    </button>
+                {% else %}
+                    <!-- SI NO ESTÁ LOGUEADO: Botón Acceso Empleados -->
+                    <a href="/login" class="text-muted small text-decoration-none">
+                        <i class="bi bi-lock-fill"></i> Acceso Empleados
+                    </a>
+                {% endif %}
             </div>
         </div>
     </div>
-</div> <!-- Este es el cierre del container que ya existía -->
+</div>
+
+<script>
+    function volverPortal() {
+        const splash = document.getElementById('splash-portal');
+        splash.style.display = 'flex';
+        setTimeout(() => { splash.style.opacity = '1'; }, 10);
+        
+        setTimeout(() => {
+            window.location.href = "/admin";
+        }, 2000);
+    }
+</script>
+
 {% endblock %}
