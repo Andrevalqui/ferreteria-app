@@ -1,7 +1,7 @@
 let carrito = [];
 
 document.addEventListener("DOMContentLoaded", function() {
-    // Splash Screen Animación
+    // Splash Screen
     const splash = document.getElementById('splash-screen');
     if(splash){
         setTimeout(() => {
@@ -11,7 +11,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
-// Función para añadir productos
 function agregarAlCarrito(id, nombre, precio) {
     const inputCant = document.getElementById('cant-' + id);
     const cantidad = parseInt(inputCant.value);
@@ -24,10 +23,11 @@ function agregarAlCarrito(id, nombre, precio) {
             carrito.push({ id, nombre, precio, cantidad });
         }
         actualizarUI();
-        // Feedback visual simple
+        
+        // Animación botón
         const btn = event.target;
         const originalText = btn.innerHTML;
-        btn.innerHTML = '<i class="bi bi-check2"></i> LISTO';
+        btn.innerHTML = '<i class="bi bi-check2"></i> AGREGADO';
         btn.classList.remove('btn-warning');
         btn.classList.add('btn-success');
         setTimeout(() => {
@@ -38,7 +38,6 @@ function agregarAlCarrito(id, nombre, precio) {
     }
 }
 
-// Actualizar interfaz del carrito
 function actualizarUI() {
     const totalItems = carrito.reduce((sum, item) => sum + item.cantidad, 0);
     const badge = document.getElementById('cart-count');
@@ -83,6 +82,7 @@ function eliminarItem(index) {
     actualizarUI();
 }
 
+// Lógica de Envío Actualizada
 function enviarPedidoWhatsapp() {
     if (carrito.length === 0) {
         alert("El carrito está vacío.");
@@ -92,33 +92,34 @@ function enviarPedidoWhatsapp() {
     const nombre = document.getElementById('cliente-nombre').value;
     const empresa = document.getElementById('cliente-empresa').value;
     const entrega = document.getElementById('tipo-entrega').value;
+    const pago = document.getElementById('tipo-pago').value; // Nuevo campo
 
     if (!nombre) {
         alert("Por favor ingrese su nombre para el pedido.");
         return;
     }
 
-    // --- AQUÍ PONDRÁS TU NÚMERO ---
-    const telefonoVendedor = "51999999999"; 
+    // TU NÚMERO ACTUALIZADO
+    const telefonoVendedor = "51997317288"; 
 
-    let mensaje = `*NUEVO PEDIDO WEB* 🛠️%0A`;
-    mensaje += `📅 Fecha: ${new Date().toLocaleDateString()}%0A`;
-    mensaje += `👤 Cliente: ${nombre}%0A`;
-    if(empresa) mensaje += `🏢 Empresa: ${empresa}%0A`;
-    mensaje += `🚚 Entrega: ${entrega}%0A`;
+    let mensaje = `*HOLA, QUIERO CONFIRMAR ESTE PEDIDO:* 🛒%0A`;
+    mensaje += `--------------------------------%0A`;
+    mensaje += `👤 *Cliente:* ${nombre}%0A`;
+    if(empresa) mensaje += `🏢 *Empresa:* ${empresa}%0A`;
+    mensaje += `🚚 *Entrega:* ${entrega}%0A`;
+    mensaje += `💳 *Pago:* ${pago}%0A`;
     mensaje += `--------------------------------%0A`;
     
     let totalGeneral = 0;
     carrito.forEach(item => {
         let subtotal = item.precio * item.cantidad;
         totalGeneral += subtotal;
-        mensaje += `▪️ (${item.cantidad}) ${item.nombre} - S/ ${subtotal.toFixed(2)}%0A`;
+        mensaje += `▪️ ${item.cantidad} un. - ${item.nombre} (S/ ${subtotal.toFixed(2)})%0A`;
     });
 
     mensaje += `--------------------------------%0A`;
     mensaje += `*TOTAL A PAGAR: S/ ${totalGeneral.toFixed(2)}*%0A`;
     mensaje += `--------------------------------%0A`;
-    mensaje += `Quedo a la espera de confirmación.`;
-
+    
     window.open(`https://wa.me/${telefonoVendedor}?text=${mensaje}`, '_blank');
 }
