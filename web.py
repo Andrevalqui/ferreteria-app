@@ -8,7 +8,7 @@ app = Flask(__name__)
 app.secret_key = "CLAVE_SECRETA_FERRETERIA"
 
 # --- CONFIGURACIÓN SUPABASE ---
-SUPABASE_URL = "https://hvwckeoykzvntqgdbjq.supabase.co"
+SUPABASE_URL = "https://hvwwckeoykzvntqgdbjq.supabase.co"
 SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2d3dja2VveWt6dm50cWdkYmpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkwMTQ3OTMsImV4cCI6MjA4NDU5MDc5M30.w9pHZZi-L36qQYIH5-K3dIvlWVFQ7uegTjXVT3q7JLQ"
 
 # --- FUNCIONES AUXILIARES ---
@@ -149,4 +149,5 @@ def eliminar_producto(id):
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
