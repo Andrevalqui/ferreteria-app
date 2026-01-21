@@ -9,10 +9,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <style>
+        /* Estilos Sidebar integrados */
+        .sidebar { min-height: 100vh; background-color: #1e293b; border-right: 1px solid #334155; }
+        .nav-link { color: #cbd5e1; font-weight: 600; padding: 15px 20px; border-radius: 10px; margin-bottom: 5px; }
+        .nav-link:hover, .nav-link.active { background-color: #f59e0b; color: #0f172a; }
+        
+        /* Tu estilo original mantenido */
         .admin-content { background-color: #0f172a; min-height: 100vh; color: white; padding: 2rem; }
         .table-dark { background-color: #1e293b; --bs-table-bg: #1e293b; }
         .btn-circle { width: 35px; height: 35px; padding: 0; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; }
-        /* Modal Oscuro */
         .modal-content { background-color: #1e293b; color: white; border: 1px solid #334155; }
         .form-control, .form-select { background-color: #0f172a; border: 1px solid #475569; color: white; }
         .form-control:focus, .form-select:focus { background-color: #0f172a; color: white; border-color: #f59e0b; box-shadow: none; }
@@ -20,13 +25,41 @@
 </head>
 <body>
 
-    <div class="container py-4">
+<div class="d-flex">
+    <!-- SIDEBAR INTEGRADO -->
+    <div class="d-flex flex-column p-3 text-white sidebar" style="width: 280px;">
+        <div class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" width="40" class="me-2">
+            <span class="fs-6 fw-bold">PANEL GESTIÓN</span>
+        </div>
+        <hr>
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item"><a href="/admin" class="nav-link"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a></li>
+            <li><a href="#" class="nav-link active"><i class="bi bi-box-seam me-2"></i> Productos</a></li>
+            <li><a href="#" class="nav-link"><i class="bi bi-people me-2"></i> Usuarios</a></li>
+            <li><a href="#" class="nav-link"><i class="bi bi-cart-check me-2"></i> Ventas</a></li>
+        </ul>
+        <hr>
+        <div class="dropdown">
+            <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+                <div class="rounded-circle bg-warning text-dark d-flex justify-content-center align-items-center fw-bold" style="width: 32px; height: 32px;">
+                    {{ user[0] | upper }}
+                </div>
+                <strong class="ms-2">{{ user }}</strong>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+                <li><a class="dropdown-item" href="/">Ir a la Web</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item text-danger" href="/logout">Cerrar Sesión</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- CONTENIDO PRINCIPAL (Tu tabla original adaptada) -->
+    <div class="flex-grow-1 admin-content">
         <!-- CABECERA -->
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <a href="/admin" class="btn btn-outline-light btn-sm mb-2"><i class="bi bi-arrow-left"></i> Volver al Panel</a>
-                <h2 class="fw-bold">📦 Inventario de Productos</h2>
-            </div>
+            <h2 class="fw-bold">📦 Inventario de Productos</h2>
             <button class="btn btn-warning fw-bold" onclick="abrirModalNuevo()">
                 <i class="bi bi-plus-lg"></i> NUEVO PRODUCTO
             </button>
@@ -51,8 +84,15 @@
                     <tr>
                         <td class="text-muted">#{{ p.id }}</td>
                         <td>
+                            <!-- LÓGICA INTELIGENTE DE IMAGEN -->
                             {% if p.img %}
-                                <img src="{{ url_for('static', filename='images/' + p.img) }}" width="40" height="40" class="rounded object-fit-cover">
+                                {% if '_' in p.img %}
+                                    <!-- Imagen nueva en Nube (Supabase) -->
+                                    <img src="{{ supabase_url }}/storage/v1/object/public/imagenes/{{ p.img }}" width="40" height="40" class="rounded object-fit-cover">
+                                {% else %}
+                                    <!-- Imagen antigua Local (Static) -->
+                                    <img src="{{ url_for('static', filename='images/' + p.img) }}" width="40" height="40" class="rounded object-fit-cover">
+                                {% endif %}
                             {% else %}
                                 <div class="bg-secondary rounded d-flex align-items-center justify-content-center text-white small" style="width:40px; height:40px;"><i class="bi bi-box"></i></div>
                             {% endif %}
@@ -86,93 +126,107 @@
             </table>
         </div>
     </div>
+</div>
 
-    <!-- MODAL CREAR/EDITAR -->
-    <div class="modal fade" id="prodModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header border-secondary">
-                    <h5 class="modal-title fw-bold" id="modalTitle">Nuevo Producto</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <form action="/admin/producto/guardar" method="POST">
-                    <div class="modal-body">
-                        <input type="hidden" name="id" id="prodId">
-                        
-                        <div class="mb-3">
-                            <label class="form-label text-secondary small">Nombre del Producto</label>
-                            <input type="text" name="nombre" id="prodNombre" class="form-control" required>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-6 mb-3">
-                                <label class="form-label text-secondary small">Categoría</label>
-                                <select name="categoria" id="prodCat" class="form-select" required>
-                                    <option value="materiales">Materiales</option>
-                                    <option value="seguridad">Seguridad</option>
-                                    <option value="herramientas">Herramientas</option>
-                                    <option value="accesorios">Accesorios</option>
-                                    <option value="electricos">Eléctricos</option>
-                                </select>
-                            </div>
-                            <div class="col-6 mb-3">
-                                <label class="form-label text-secondary small">Stock Inicial</label>
-                                <input type="number" name="stock" id="prodStock" class="form-control" value="0" required>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label text-secondary small">Precio Unitario (S/)</label>
-                            <input type="number" step="0.01" name="precio" id="prodPrecio" class="form-control" value="0.00" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label text-secondary small">Descripción Corta</label>
-                            <textarea name="desc" id="prodDesc" class="form-control" rows="2"></textarea>
-                        </div>
-
-                        <!-- Por ahora nombre manual de imagen -->
-                        <div class="mb-3">
-                            <label class="form-label text-secondary small">Nombre Archivo Imagen (Ej: cemento.jpg)</label>
-                            <input type="text" name="img_url" id="prodImg" class="form-control" placeholder="Opcional">
-                        </div>
-
-                    </div>
-                    <div class="modal-footer border-secondary">
-                        <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-warning fw-bold">GUARDAR DATOS</button>
-                    </div>
-                </form>
+<!-- MODAL CREAR/EDITAR (Con Multipart para Archivos) -->
+<div class="modal fade" id="prodModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title fw-bold" id="modalTitle">Nuevo Producto</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
+            <!-- OJO: enctype es vital para subir fotos -->
+            <form action="/admin/producto/guardar" method="POST" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="prodId">
+                    <input type="hidden" name="img_actual" id="prodImgActual">
+                    
+                    <div class="mb-3">
+                        <label class="form-label text-secondary small">Nombre del Producto</label>
+                        <input type="text" name="nombre" id="prodNombre" class="form-control" required>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label class="form-label text-secondary small">Categoría</label>
+                            <select name="categoria" id="prodCat" class="form-select" required>
+                                <option value="materiales">Materiales</option>
+                                <option value="seguridad">Seguridad</option>
+                                <option value="herramientas">Herramientas</option>
+                                <option value="accesorios">Accesorios</option>
+                                <option value="electricos">Eléctricos</option>
+                            </select>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="form-label text-secondary small">Stock Inicial</label>
+                            <input type="number" name="stock" id="prodStock" class="form-control" value="0" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-secondary small">Precio Unitario (S/)</label>
+                        <input type="number" step="0.01" name="precio" id="prodPrecio" class="form-control" value="0.00" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-secondary small">Descripción Corta</label>
+                        <textarea name="desc" id="prodDesc" class="form-control" rows="2"></textarea>
+                    </div>
+
+                    <!-- CAMBIO: Input de Archivo Real -->
+                    <div class="mb-3">
+                        <label class="form-label text-secondary small">Imagen del Producto</label>
+                        <input type="file" name="img_archivo" id="prodFile" class="form-control" accept="image/*">
+                        <small class="text-muted d-block mt-1" id="textoImagenActual"></small>
+                    </div>
+
+                </div>
+                <div class="modal-footer border-secondary">
+                    <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-warning fw-bold">GUARDAR DATOS</button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        const modal = new bootstrap.Modal(document.getElementById('prodModal'));
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const modal = new bootstrap.Modal(document.getElementById('prodModal'));
 
-        function abrirModalNuevo() {
-            document.getElementById('modalTitle').innerText = "Nuevo Producto";
-            document.getElementById('prodId').value = "";
-            document.getElementById('prodNombre').value = "";
-            document.getElementById('prodStock').value = "";
-            document.getElementById('prodPrecio').value = "";
-            document.getElementById('prodDesc').value = "";
-            document.getElementById('prodImg').value = "";
-            modal.show();
+    function abrirModalNuevo() {
+        document.getElementById('modalTitle').innerText = "Nuevo Producto";
+        document.getElementById('prodId').value = "";
+        document.getElementById('prodImgActual').value = "";
+        document.getElementById('prodNombre').value = "";
+        document.getElementById('prodStock').value = "";
+        document.getElementById('prodPrecio').value = "";
+        document.getElementById('prodDesc').value = "";
+        document.getElementById('prodFile').value = ""; // Limpiar archivo
+        document.getElementById('textoImagenActual').innerText = "";
+        modal.show();
+    }
+
+    function editar(p) {
+        document.getElementById('modalTitle').innerText = "Editar Producto #" + p.id;
+        document.getElementById('prodId').value = p.id;
+        document.getElementById('prodImgActual').value = p.img || ""; // Guardamos el nombre actual
+        document.getElementById('prodNombre').value = p.nombre;
+        document.getElementById('prodCat').value = p.categoria;
+        document.getElementById('prodStock').value = p.stock;
+        document.getElementById('prodPrecio').value = p.precio;
+        document.getElementById('prodDesc').value = p.desc;
+        document.getElementById('prodFile').value = ""; // Limpiar input file
+        
+        if (p.img) {
+            document.getElementById('textoImagenActual').innerText = "Imagen actual guardada (Subir otra para cambiar)";
+        } else {
+            document.getElementById('textoImagenActual').innerText = "Sin imagen actual.";
         }
-
-        function editar(p) {
-            document.getElementById('modalTitle').innerText = "Editar Producto #" + p.id;
-            document.getElementById('prodId').value = p.id;
-            document.getElementById('prodNombre').value = p.nombre;
-            document.getElementById('prodCat').value = p.categoria;
-            document.getElementById('prodStock').value = p.stock;
-            document.getElementById('prodPrecio').value = p.precio;
-            document.getElementById('prodDesc').value = p.desc;
-            document.getElementById('prodImg').value = p.img || "";
-            modal.show();
-        }
-    </script>
+        
+        modal.show();
+    }
+</script>
 </body>
 </html>
