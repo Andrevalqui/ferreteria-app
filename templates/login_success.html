@@ -1,15 +1,31 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta http-equiv="refresh" content="2;url=/admin" />
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="2;url=/admin" /> <!-- Redirección automática -->
+    <title>Accediendo...</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <style>
-        body { background-color: #0f172a; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif; }
-        .loader { width: 50px; height: 50px; border: 5px solid #333; border-top: 5px solid #f59e0b; border-radius: 50%; animation: spin 1s linear infinite; margin-top: 20px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        body { 
+            background-color: #0f172a; 
+            margin: 0; padding: 0; height: 100vh; 
+            display: flex; justify-content: center; align-items: center; 
+        }
     </style>
 </head>
 <body>
-    <h2>Accediendo al portal...</h2>
-    <div class="loader"></div>
+
+    <div class="text-center">
+        <!-- Mismo diseño que Splash -->
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo-pulse mb-3" style="max-width: 140px;">
+        
+        <h1 class="logo-text">FERRETERÍA <span class="text-accent">TAPIA MELENDEZ</span></h1>
+        
+        <p class="loading-text" style="color: white; font-weight: 800; font-size: 1.2rem;">Accediendo al portal...</p>
+        
+        <div class="loader mx-auto"></div>
+    </div>
+
 </body>
 </html>
