@@ -20,16 +20,33 @@ body {
     background-color: var(--dark-bg);
     z-index: 9999;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: center; /* Centrado horizontal */
+    align-items: center;     /* Centrado vertical */
     flex-direction: column;
+    text-align: center;
     transition: opacity 0.5s ease-out;
 }
 
-.logo-anim {
-    font-size: 3rem;
+/* Animación de Palpitación del Logo */
+.logo-pulse {
+    max-width: 150px; /* Tamaño del logo en el splash */
+    width: 100%;
+    height: auto;
+    animation: palpitar 2s infinite ease-in-out;
+}
+
+@keyframes palpitar {
+    0% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(245, 158, 11, 0)); }
+    50% { transform: scale(1.1); filter: drop-shadow(0 0 15px rgba(245, 158, 11, 0.5)); } /* Brillo naranja al crecer */
+    100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(245, 158, 11, 0)); }
+}
+
+.logo-text {
+    font-size: 2rem;
     font-weight: 800;
-    animation: fadeInUp 1s ease;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
 }
 
 .loader {
@@ -38,11 +55,10 @@ body {
     border-top: 5px solid var(--accent);
     border-radius: 50%;
     animation: spin 1s linear infinite;
-    margin-top: 20px;
+    margin-top: 15px;
+    margin-left: auto;  /* Esto asegura el centrado forzado */
+    margin-right: auto; /* Esto asegura el centrado forzado */
 }
-
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
 /* NAVBAR */
 .navbar { background-color: rgba(15, 23, 42, 0.95) !important; backdrop-filter: blur(10px); }
@@ -70,4 +86,5 @@ body {
 }
 
 .card i { transition: color 0.3s; }
+
 .card:hover i { color: #fff; text-shadow: 0 0 10px var(--accent); }
