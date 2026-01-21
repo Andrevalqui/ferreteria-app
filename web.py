@@ -5,9 +5,9 @@ from supabase import create_client, Client
 app = Flask(__name__)
 
 # --- CONFIGURACIÓN SUPABASE ---
-# Pega aquí tus credenciales reales de Supabase
-SUPABASE_URL = https://hvwwckeoykzvntqgdbjq.supabase.co
-SUPABASE_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2d3dja2VveWt6dm50cWdkYmpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjkwMTQ3OTMsImV4cCI6MjA4NDU5MDc5M30.w9pHZZi-L36qQYIH5-K3dIvlWVFQ7uegTjXVT3q7JLQ
+# NOTA: Todo texto debe ir entre comillas " "
+SUPABASE_URL = "https://hvwckeoykzvntqgdbjq.supabase.co"
+SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2d3dja2VveWt6dm50cWdkYmpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzcwMDIwMDQsImV4cCI6MjA1MjU3ODAwNH0.w9pHZZI-L36qQYlH5-K3dIvlWVFQ7uegTjxVT3q7JLQ"
 
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
@@ -32,3 +32,4 @@ def categoria(tipo):
 
 if __name__ == '__main__':
     app.run(debug=True)
+
