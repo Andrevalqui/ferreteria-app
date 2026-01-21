@@ -17,17 +17,25 @@
 
     <!-- SPLASH SCREEN -->
     <div id="splash-screen">
-        <div class="splash-content">
-            <h1 class="logo-anim">FERRETERÍA <span class="text-accent">PREMIUM</span></h1>
-            <p>Cargando catálogo...</p>
-            <div class="loader"></div>
+        <div class="splash-content text-center">
+            <!-- Logo con animación -->
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo Tapia Melendez" class="logo-pulse mb-3">
+            
+            <h1 class="logo-text">FERRETERÍA <span class="text-accent">TAPIA MELENDEZ</span></h1>
+            <p class="text-muted small">Cargando catálogo...</p>
+            
+            <!-- Loader centrado -->
+            <div class="loader mx-auto"></div>
         </div>
     </div>
 
     <!-- NAVBAR -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="/">FERRETERÍA <span class="text-accent">X</span></a>
+            <a class="navbar-brand fw-bold" href="/">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" height="30" class="d-inline-block align-text-top me-2">
+                TAPIA <span class="text-accent">MELENDEZ</span>
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -127,4 +135,5 @@
 </body>
 
 </html>
+
 
