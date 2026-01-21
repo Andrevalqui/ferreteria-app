@@ -31,7 +31,8 @@ def consultar_supabase(tabla, query_params={}):
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    # Pasamos la variable 'user' (si existe en sesión) al HTML
+    return render_template('index.html', user=session.get('user'))
 
 @app.route('/catalogo/todo')
 def catalogo_completo():
@@ -89,6 +90,7 @@ def logout():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 
