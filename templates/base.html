@@ -57,5 +57,52 @@
     <!-- Bootstrap JS + Tu Script -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+    <!-- MODAL DEL CARRITO -->
+<div class="modal fade" id="cartModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content bg-dark text-white border-secondary">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title fw-bold">🛒 TU PEDIDO</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="cart-items-container">
+                    <p class="text-center text-muted">Tu carrito está vacío.</p>
+                </div>
+                
+                <div class="border-top border-secondary mt-3 pt-3">
+                    <h4 class="text-end fw-bold">Total Aprox: <span class="text-accent" id="cart-total">S/ 0.00</span></h4>
+                </div>
+
+                <!-- Formulario -->
+                <div class="mt-4 p-3 bg-secondary bg-opacity-10 rounded">
+                    <h6 class="text-accent mb-3">DATOS DE ENVÍO</h6>
+                    <div class="row g-2">
+                        <div class="col-md-6">
+                            <input type="text" id="cliente-nombre" class="form-control bg-dark text-white border-secondary" placeholder="Nombre completo">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" id="cliente-empresa" class="form-control bg-dark text-white border-secondary" placeholder="Empresa (Opcional)">
+                        </div>
+                        <div class="col-12">
+                            <select id="tipo-entrega" class="form-select bg-dark text-white border-secondary">
+                                <option value="Recojo en Tienda">Recojo en Tienda Física</option>
+                                <option value="Delivery">Delivery (Coordinar dirección)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-secondary">
+                <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Seguir comprando</button>
+                <button type="button" class="btn btn-success fw-bold" onclick="enviarPedidoWhatsapp()">
+                    <i class="bi bi-whatsapp"></i> ENVIAR PEDIDO
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
+
 </html>
