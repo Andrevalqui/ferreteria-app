@@ -7,7 +7,7 @@ app = Flask(__name__)
 app.secret_key = "CLAVE_SECRETA_FERRETERIA"
 
 # --- CREDENCIALES ---
-SUPABASE_URL = "https://hvwckeoykzvntqgdbjq.supabase.co"
+SUPABASE_URL = "https://hvwwckeoykzvntqgdbjq.supabase.co"
 SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh2d3dja2VveWt6dm50cWdkYmpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzcwMDIwMDQsImV4cCI6MjA1MjU3ODAwNH0.w9pHZZI-L36qQYlH5-K3dIvlWVFQ7uegTjxVT3q7JLQ"
 
 def consultar_supabase(tabla, query_params={}):
@@ -93,3 +93,4 @@ def admin_panel():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
